@@ -1,38 +1,35 @@
 🚀 Digital Twin Platform for Autonomous Quality Control
 
-Digital Twin Platform is a real-time factory simulation system designed to model defect propagation across multi-stage production pipelines. It creates a digital twin for each product, enabling early defect detection, root-cause analysis, and live monitoring.
+Digital Twin Platform is a software-based simulation system designed to model defect propagation across multi-stage production workflows. It creates a digital twin for each product, enabling early defect detection, root-cause analysis, and live monitoring within a simulated environment.
 
 ✨ Core Features
 
 🏭 Multi-Stage Simulation
-Simulates a 10-station production line with real-time processing.
+Simulates a 10-station production workflow with real-time state updates.
 
 🧠 Digital Twin Modeling
-Tracks each product’s lifecycle and defect history.
+Tracks each product’s lifecycle and defect history within the simulation.
 
 ⚠️ Defect Detection
-Identifies anomalies early and predicts downstream failures.
+Identifies anomalies early and predicts downstream failures based on simulated data.
 
 🔍 Root Cause Analysis
-Finds the originating station and parameter causing defects.
+Finds the originating stage and parameter responsible for defects.
 
 📊 Live Dashboard
-Real-time monitoring of station status, alerts, and system health.
+Real-time monitoring of system state, alerts, and simulation metrics.
 
 📅 Event Timeline
-Logs production events and system changes.
+Logs simulation events and state transitions.
 
 🧑‍💻 Admin Panel
-Central control for monitoring and analysis.
+Central interface for monitoring and analyzing simulation data.
 
 🛠️ Technology Stack
 
 Backend: Python, Flask
-
 Frontend: HTML, CSS, JavaScript
-
 Data Processing: Pandas, NumPy
-
 Architecture: REST APIs, Multi-page App
 
 🚀 Run Locally
