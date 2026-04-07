@@ -48,11 +48,3 @@ pip install -r requirements.txt
 
 Run the app:
 python app.py
-
-
-🎯 Use Cases
-
-Smart Manufacturing
-Digital Twin Systems
-Quality Monitoring
-Industry 4.0 Projects
