@@ -28,8 +28,11 @@ Central control for monitoring and analysis.
 🛠️ Technology Stack
 
 Backend: Python, Flask
+
 Frontend: HTML, CSS, JavaScript
+
 Data Processing: Pandas, NumPy
+
 Architecture: REST APIs, Multi-page App
 
 🚀 Run Locally
