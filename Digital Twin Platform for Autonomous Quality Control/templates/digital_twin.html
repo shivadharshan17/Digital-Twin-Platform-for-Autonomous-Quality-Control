@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Digital Twin Status</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <section class="toolbar-card">
+      <div class="toolbar-left">
+        <h1>Digital Twin Status</h1>
+        <p class="toolbar-subtitle">Per-product virtual lifecycle and station-wise digital twin history</p>
+      </div>
+
+      <div class="toolbar-right">
+        <a href="/dashboard" class="btn secondary">Back to Dashboard</a>
+      </div>
+    </section>
+
+    <section id="digitalTwinGrid" class="digital-twin-grid"></section>
+  </div>
+
+  <script>
+    function formatLabel(value) {
+      return String(value || "-")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, ch => ch.toUpperCase());
+    }
+
+    function stationStatusClass(status) {
+      if (status === "Corrected") return "dt-chip corrected";
+      if (status === "Critical") return "dt-chip critical";
+      if (status === "Warning") return "dt-chip warning";
+      return "dt-chip normal";
+    }
+
+    async function loadDigitalTwinStatus() {
+      const res = await fetch("/api/digital_twin_status");
+      const data = await res.json();
+
+      const grid = document.getElementById("digitalTwinGrid");
+      grid.innerHTML = "";
+
+      if (!data.products || !data.products.length) {
+        grid.innerHTML = `<div class="empty-state-card">No simulation data yet. Run the simulation first.</div>`;
+        return;
+      }
+
+      data.products.forEach(product => {
+        const historyHtml = product.history.map(step => `
+          <div class="dt-step-card">
+            <div class="dt-step-top">
+              <div>
+                <div class="dt-step-station">S${step.station_id} - ${step.station_name}</div>
+                <div class="dt-step-meta">
+                  Risk: ${(Number(step.risk_score || 0) * 100).toFixed(1)}%
+                  | Failure: ${formatLabel(step.predicted_failure || "none")}
+                </div>
+              </div>
+              <div class="${stationStatusClass(step.status)}">${step.status}</div>
+            </div>
+
+            <div class="dt-metrics">
+              <div><span>Temp</span><strong>${step.temperature ?? "-"}</strong></div>
+              <div><span>Pressure</span><strong>${step.pressure ?? "-"}</strong></div>
+              <div><span>Vibration</span><strong>${step.vibration ?? "-"}</strong></div>
+              <div><span>Speed</span><strong>${step.speed ?? "-"}</strong></div>
+              <div><span>Cycle Time</span><strong>${step.cycle_time ?? "-"}</strong></div>
+              <div><span>Confidence</span><strong>${step.confidence != null ? (Number(step.confidence) * 100).toFixed(1) + "%" : "-"}</strong></div>
+            </div>
+
+            <div class="dt-reason">
+  <strong>Root Cause:</strong>
+  ${
+    step.predicted_root_station
+      ? `S${step.predicted_root_station} | ${step.root_parameter || "-"}`
+      : "No root cause detected"
+  }
+</div>
+
+            <div class="dt-reason">
+              <strong>Reason:</strong>
+              ${step.prediction_reason || "-"}
+            </div>
+
+            <div class="dt-reason">
+              <strong>Action:</strong>
+              ${step.recommended_action || "No action"}
+            </div>
+          </div>
+        `).join("");
+
+        const card = document.createElement("div");
+        card.className = "digital-twin-card";
+        card.innerHTML = `
+          <div class="digital-twin-header">
+            <div>
+              <h3>${product.product_id}</h3>
+              <div class="digital-twin-subtitle">
+                Defect Type: ${formatLabel(product.defect_type)}
+              </div>
+            </div>
+
+            <div class="digital-twin-summary">
+              <div class="dt-summary-pill">${product.final_status}</div>
+              <div class="dt-summary-line">Corrected: ${product.corrected_count}</div>
+              <div class="dt-summary-line">Warnings: ${product.warning_count}</div>
+              <div class="dt-summary-line">Critical: ${product.critical_count}</div>
+            </div>
+          </div>
+
+          <div class="dt-history-wrapper">
+            ${historyHtml}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    loadDigitalTwinStatus();
+  </script>
+</body>
+</html>

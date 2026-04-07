@@ -1,0 +1,16 @@
+product_id,defect_type
+P001,none
+P002,none
+P003,pressure_low_s3
+P004,none
+P005,vibration_high_s5
+P006,none
+P007,temp_high_s7
+P008,none
+P009,none
+P010,pressure_low_s3
+P011,none
+P012,none
+P013,vibration_high_s5
+P014,none
+P015,temp_high_s7

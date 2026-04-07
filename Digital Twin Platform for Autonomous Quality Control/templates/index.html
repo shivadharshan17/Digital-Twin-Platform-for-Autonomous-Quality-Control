@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Predictive Digital Twin Factory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ── Animated background canvas ── -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- ── Floating grid overlay ── -->
+  <div class="grid-overlay"></div>
+
+  <div class="page-center">
+    <div class="hero-card">
+
+      <!-- top label -->
+      <div class="hero-eyebrow">
+        <span class="pulse-dot"></span>
+        System Ready — v2.4.1
+      </div>
+
+      <div class="hero-layout">
+
+        <div class="hero-left">
+          <h1>
+            <span class="h1-line2">Digital Twin Platform</span>
+            <span class="h1-line1">Autonomous Quality Control</span>
+          </h1>
+
+          <p>
+            Monitor multi-stage defect propagation in real time. Each uniquely
+            identified product moves through every station — process values,
+            status and predictions update live. Defects are flagged immediately
+            on the admin dashboard the moment they're detected.
+          </p>
+
+          <!-- stat strip -->
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <strong>10</strong>
+              <span>Stations</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+              <strong>Real-time</strong>
+              <span>Prediction</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+              <strong>Live</strong>
+              <span>Event Log</span>
+            </div>
+          </div>
+
+          <div id="homeStatus" class="status-box">
+            <span class="status-icon">◎</span>
+            <span id="statusText">System idle — press Start to begin</span>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="action-label">Quick Actions</div>
+
+          <button id="startBtn" class="btn primary full" onclick="handleStart(this)">
+            <span class="btn-text">▶ Start Simulation</span>
+            <span class="btn-loader" aria-hidden="true"></span>
+          </button>
+
+          <button id="resetBtn" class="btn danger full" onclick="handleReset(this)">
+            <span class="btn-text">↺ Reset</span>
+            <span class="btn-loader" aria-hidden="true"></span>
+          </button>
+
+          <div class="btn-divider"></div>
+
+          <a href="/dashboard" class="btn secondary full">
+            <span class="btn-text">⊞ Open Dashboard</span>
+          </a>
+
+        
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── Particle canvas ── */
+    (function () {
+      const canvas = document.getElementById('bgCanvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [];
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+      function createParticle() {
+        return {
+          x: randomBetween(0, W),
+          y: randomBetween(0, H),
+          r: randomBetween(0.6, 2.2),
+          vx: randomBetween(-0.18, 0.18),
+          vy: randomBetween(-0.22, -0.08),
+          alpha: randomBetween(0.15, 0.55),
+        };
+      }
+
+      function init() {
+        resize();
+        particles = Array.from({ length: 110 }, createParticle);
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(96, 165, 250, ${p.alpha})`;
+          ctx.fill();
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.y < -4) { p.y = H + 4; p.x = randomBetween(0, W); }
+          if (p.x < -4) p.x = W + 4;
+          if (p.x > W + 4) p.x = -4;
+        });
+
+        // Draw faint connecting lines between nearby particles
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(96, 165, 250, ${0.07 * (1 - dist / 100)})`;
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      init();
+      draw();
+    })();
+
+    /* ── Button loading helper ── */
+    function setLoading(btn, loading) {
+      if (loading) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+      } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    function setStatus(msg, type) {
+      const box = document.getElementById('homeStatus');
+      const text = document.getElementById('statusText');
+      text.textContent = msg;
+      box.className = 'status-box' + (type ? ' status-' + type : '');
+    }
+
+    /* ── Start simulation ── */
+    async function handleStart(btn) {
+      setLoading(btn, true);
+      setStatus('Starting simulation…', '');
+
+      try {
+        const res = await fetch('/start_simulation', { method: 'POST' });
+        const data = await res.json();
+
+        if (data.status === 'error') {
+          setStatus('Start failed: ' + data.message, 'error');
+          setLoading(btn, false);
+          return;
+        }
+
+        await fetch('/next_step', { method: 'POST' });
+        setStatus('Simulation started — first products entered the line.', 'ok');
+      } catch (e) {
+        setStatus('Network error — check the server.', 'error');
+      }
+
+      setLoading(btn, false);
+    }
+
+    /* ── Reset simulation ── */
+    async function handleReset(btn) {
+      setLoading(btn, true);
+      setStatus('Resetting…', '');
+      try {
+        await fetch('/reset_simulation', { method: 'POST' });
+        setStatus('Simulation reset — system idle.', '');
+      } catch (e) {
+        setStatus('Reset failed — check the server.', 'error');
+      }
+      setLoading(btn, false);
+    }
+  </script>
+</body>
+</html> 

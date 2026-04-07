@@ -1,0 +1,11 @@
+station_id,station_name,temp_min,temp_max,pressure_min,pressure_max,vibration_min,vibration_max,speed_min,speed_max,cycle_time_min,cycle_time_max
+1,Material Feed,48,52,95,105,0.20,0.35,980,1020,2.5,3.2
+2,Surface Prep,49,54,96,106,0.22,0.36,970,1010,2.8,3.4
+3,Adhesive Application,47,53,92,108,0.20,0.34,960,1000,3.0,3.8
+4,Component Placement,48,52,94,104,0.21,0.33,975,1015,2.7,3.3
+5,Alignment Check,48,51,95,103,0.22,0.32,980,1020,2.4,3.0
+6,Torque Fastening,49,53,97,107,0.23,0.35,990,1040,2.8,3.6
+7,Heat Treatment,58,64,96,106,0.20,0.30,950,990,3.5,4.2
+8,Vibration Test,47,51,93,103,0.25,0.40,960,1000,2.9,3.5
+9,Visual Inspection,46,50,94,102,0.20,0.28,970,1010,2.2,2.8
+10,Final Assembly Check,48,52,95,105,0.21,0.31,980,1020,2.6,3.3

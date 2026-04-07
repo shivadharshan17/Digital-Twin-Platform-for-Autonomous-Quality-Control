@@ -1,0 +1,5 @@
+defect_type,source_station,parameter,condition,defect_value_min,defect_value_max,propagation_start_station,final_failure_station,effect_description
+pressure_low_s3,3,pressure,low,68,78,4,10,Weak adhesive bonding causes later detachment
+vibration_high_s5,5,vibration,high,0.80,1.00,6,10,High vibration causes downstream misalignment
+temp_high_s7,7,temperature,high,64,70,8,10,Overheating causes material degradation
+none,0,none,none,0,0,0,0,Normal unit

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Live Factory Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="dashboard-shell">
+
+    <!-- COMMAND STRIP -->
+    <section class="command-strip">
+      <div class="command-item">
+        <span class="command-label">Line Status</span>
+        <span id="lineStatus" class="command-value">IDLE</span>
+      </div>
+
+      <div class="command-item">
+        <span class="command-label">Active WIP</span>
+        <span id="kpiCurrentProduct" class="command-value">-</span>
+      </div>
+
+      <div class="command-item">
+        <span class="command-label">Total Units</span>
+        <span id="kpiTotalProducts" class="command-value">0</span>
+      </div>
+
+      <div class="command-item">
+        <span class="command-label">Completed</span>
+        <span id="kpiCompleted" class="command-value">0</span>
+      </div>
+
+      <div class="command-item alert-item">
+        <span class="command-label">Critical Alerts</span>
+        <span id="kpiAlerts" class="command-value">0</span>
+      </div>
+    </section>
+
+    <!-- HALT BANNER -->
+    <section id="haltBanner" class="halt-banner hidden">
+      🚨 PRODUCTION HALTED — DEFECT DETECTED
+    </section>
+
+    <!-- TOOLBAR -->
+    <section class="toolbar-card">
+      <div class="toolbar-left">
+        <h1>Live Factory Dashboard</h1>
+        <p class="toolbar-subtitle">
+          Predictive quality monitoring and real-time defect containment
+        </p>
+      </div>
+
+      <div class="toolbar-right">
+        <a href="/digital_twin" class="btn secondary">Digital Twin Status</a>
+        <button id="startBtn" class="btn primary">Start Simulation</button>
+        <button id="stepBtn" class="btn secondary">Single Simulation</button>
+        <button id="stopBtn" class="btn danger">Stop</button>
+      </div>
+    </section>
+
+    <!-- LATEST EVENT -->
+    <section class="event-banner">
+      <span class="event-title">Latest Event</span>
+      <span id="lastEvent" class="event-message">System idle</span>
+    </section>
+
+    <!-- MAIN GRID -->
+    <section class="main-grid">
+
+      <!-- LEFT: FACTORY -->
+      <div class="factory-card">
+        <div class="section-header">
+          <h2>10 Station Processing View</h2>
+        </div>
+
+        <div id="stationGrid" class="station-grid"></div>
+      </div>
+
+      <!-- RIGHT: INTELLIGENCE SIDEBAR -->
+      <aside class="insight-sidebar">
+
+        <div class="sidebar-card">
+          <h3>⚠ Latest Alert</h3>
+          <div id="latestAlert" class="sidebar-content">
+            No alerts
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>🧠 Root Cause Analysis</h3>
+          <div id="rootCause" class="sidebar-content">
+            -
+          </div>
+        </div>
+
+        <div class="sidebar-card log-card">
+          <h3>📜 Event Timeline</h3>
+          <div id="eventLog" class="event-log"></div>
+        </div>
+
+      </aside>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section class="analytics-grid">
+      <div class="analytics-card">
+        <h3>📊 Station Health</h3>
+        <div id="stationHealth" class="analytics-content">
+          Awaiting live data
+        </div>
+      </div>
+
+      <div class="analytics-card">
+        <h3>📈 Risk Trend</h3>
+        <div id="riskTrend" class="analytics-content">
+          Awaiting live data
+        </div>
+      </div>
+
+      <div class="analytics-card">
+        <h3>📉 Alerts Summary</h3>
+        <div id="alertsSummary" class="analytics-content">
+          Awaiting live data
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
